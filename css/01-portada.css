@@ -1,0 +1,8 @@
+/* Portada de la página de inicio: foto de fondo con degradado oscuro para que el texto se lea */
+.portada {
+    background-image:
+        linear-gradient(rgba(14, 47, 59, 0.45), rgba(14, 47, 59, 0.78)),
+        url('https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1920&q=80');
+    background-size: cover;
+    background-position: center;
+}

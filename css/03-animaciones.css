@@ -1,0 +1,7 @@
+/* Aparición suave al hacer scroll (ver initAnimacionesScroll en js/ui.js) */
+.fade-in-up { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+.fade-in-up.visible { opacity: 1; transform: translateY(0); }
+
+/* Preguntas frecuentes (<details>): sin la flecha por defecto del navegador */
+details > summary { list-style: none; }
+details > summary::-webkit-details-marker { display: none; }

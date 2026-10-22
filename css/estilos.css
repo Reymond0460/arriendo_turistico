@@ -1,0 +1,19 @@
+/* =====================================================================
+   ESTILOS DE LAGO AZUL · archivo principal
+   Cada archivo de esta carpeta (css/) se ocupa de una parte de la página.
+   El ORDEN importa: los últimos pueden sobrescribir a los primeros.
+
+   ¿Qué quieres cambiar?                          Archivo
+   ---------------------------------------------------------------------
+   Utilidades de diseño (colores, espacios, etc.)  tailwind.css (GENERADO, no editar)
+   Portada de la página de inicio ................. 01-portada.css
+   Calendario de fechas ........................... 02-calendario.css
+   Animaciones y detalles ......................... 03-animaciones.css
+
+   Para cambiar colores o tipografías de la marca: tailwind.config.js
+   y luego  npm run css  (ver README.md)
+   ===================================================================== */
+@import url("tailwind.css");
+@import url("01-portada.css");
+@import url("02-calendario.css");
+@import url("03-animaciones.css");

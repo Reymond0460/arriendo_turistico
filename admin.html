@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de administración | Lago Azul</title>
+  <meta name="description" content="Panel de administración.">
+  <meta name="robots" content="noindex">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body class="bg-[#f8fafc] text-ocean-900 antialiased font-sans flex flex-col min-h-screen">
+
+    <nav class="bg-sand-50/90 backdrop-blur-md fixed w-full z-40 top-0 border-b border-sand-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="index.html" aria-label="Ir al inicio de Lago Azul" class="flex items-center gap-2 group rounded-lg p-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-ocean-500">
+                    <i class="fa-solid fa-house-chimney-window text-ocean-700 text-xl group-hover:-rotate-6 transition-transform"></i>
+                    <span class="font-serif font-semibold text-2xl tracking-tight text-ocean-900">Lago Azul</span>
+                </a>
+                <a href="index.html" class="text-ocean-700 hover:text-coral-600 px-3 py-2 text-sm font-medium transition"><i class="fa-solid fa-arrow-left mr-2"></i>Ver sitio</a>
+            </div>
+        </div>
+    </nav>
+
+    <main id="panel" class="hidden flex-grow pt-28 pb-12 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8">
+
+        <div class="flex flex-wrap justify-between items-end gap-4 mb-8">
+            <div>
+                <h1 class="font-serif text-3xl text-gray-900">Panel de administración</h1>
+                <p class="text-sm text-gray-500 mt-1">Gestiona tus propiedades, reservas y disponibilidad</p>
+            </div>
+            <div class="bg-gray-200 p-1 rounded-xl flex text-sm font-medium" role="tablist">
+                <button type="button" role="tab" data-tab="reservas" class="px-4 py-2 rounded-lg">Reservas</button>
+                <button type="button" role="tab" data-tab="propiedades" class="px-4 py-2 rounded-lg">Propiedades</button>
+                <button type="button" role="tab" data-tab="ajustes" class="px-4 py-2 rounded-lg">Ajustes</button>
+            </div>
+        </div>
+
+        <!-- Resumen -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5"><div class="text-xs text-gray-500 font-bold uppercase tracking-wider">Reservas</div><div id="stat-reservas" class="text-3xl font-light mt-1">0</div></div>
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5"><div class="text-xs text-gray-500 font-bold uppercase tracking-wider">Noches ocupadas</div><div id="stat-noches" class="text-3xl font-light mt-1">0</div></div>
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5"><div class="text-xs text-gray-500 font-bold uppercase tracking-wider">Abonos</div><div id="stat-abonos" class="text-3xl font-light text-coral-600 mt-1">$0</div></div>
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5"><div class="text-xs text-gray-500 font-bold uppercase tracking-wider">Propiedades activas</div><div id="stat-propiedades" class="text-3xl font-light mt-1">0</div></div>
+        </div>
+
+        <!-- ===== PESTAÑA: RESERVAS ===== -->
+        <section id="tab-reservas" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                <div class="px-5 py-4 border-b border-gray-100 flex flex-wrap justify-between items-center gap-3">
+                    <h2 class="font-medium text-gray-900">Reservas y bloqueos</h2>
+                    <select id="filtro-propiedad" aria-label="Filtrar por propiedad" class="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-ocean-500"></select>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-100">
+                        <thead class="bg-gray-50/60"><tr>
+                            <th class="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Estado</th>
+                            <th class="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Propiedad</th>
+                            <th class="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Detalle</th>
+                            <th class="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Período</th>
+                            <th class="px-5 py-3"></th>
+                        </tr></thead>
+                        <tbody id="tabla-reservas" class="divide-y divide-gray-50"></tbody>
+                    </table>
+                </div>
+                <p id="reservas-vacio" class="hidden p-12 text-center text-gray-400">No hay reservas ni bloqueos.</p>
+            </div>
+
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 self-start">
+                <h2 class="font-medium text-gray-900 mb-4"><i class="fa-solid fa-wrench text-amber-500 mr-2"></i>Bloquear fechas</h2>
+                <form id="bloqueo-form" class="space-y-4">
+                    <div><label for="bloqueo-propiedad" class="block text-sm font-medium text-gray-700 mb-1.5">Propiedad</label>
+                        <select id="bloqueo-propiedad" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ocean-500 outline-none"></select></div>
+                    <div><label for="bloqueo-fechas" class="block text-sm font-medium text-gray-700 mb-1.5">Rango (entrada – salida)</label>
+                        <input id="bloqueo-fechas" type="text" readonly placeholder="Elige fechas en el calendario" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ocean-500 outline-none bg-gray-50 cursor-pointer"></div>
+                    <div><label for="bloqueo-motivo" class="block text-sm font-medium text-gray-700 mb-1.5">Motivo (opcional)</label>
+                        <input id="bloqueo-motivo" type="text" placeholder="Ej: Mantención" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ocean-500 outline-none"></div>
+                    <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-medium py-3 rounded-xl transition">Bloquear calendario</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- ===== PESTAÑA: PROPIEDADES ===== -->
+        <section id="tab-propiedades" class="hidden">
+            <div class="flex justify-between items-center mb-5">
+                <h2 class="font-medium text-gray-900">Tus propiedades</h2>
+                <button type="button" id="btn-nueva-propiedad" class="bg-ocean-800 hover:bg-ocean-900 text-white text-sm font-medium px-5 py-2.5 rounded-xl transition"><i class="fa-solid fa-plus mr-2"></i>Nueva propiedad</button>
+            </div>
+            <div id="lista-propiedades" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"></div>
+        </section>
+
+        <!-- ===== PESTAÑA: AJUSTES ===== -->
+        <section id="tab-ajustes" class="hidden max-w-2xl">
+            <form id="ajustes-form" class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 md:p-8 space-y-6">
+                <h2 class="font-serif text-2xl text-gray-900">Ajustes generales</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div><label for="aj-abono" class="block text-xs font-semibold text-gray-600 mb-1">% de abono para reservar</label>
+                        <input id="aj-abono" type="number" min="1" max="100" required class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ocean-500 outline-none"></div>
+                    <div><label for="aj-recargo" class="block text-xs font-semibold text-gray-600 mb-1">% de recargo en temporada alta</label>
+                        <input id="aj-recargo" type="number" min="0" max="200" required class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ocean-500 outline-none"></div>
+                </div>
+                <fieldset>
+                    <legend class="block text-xs font-semibold text-gray-600 mb-2">Meses de temporada alta</legend>
+                    <div id="aj-meses" class="grid grid-cols-4 sm:grid-cols-6 gap-2"></div>
+                </fieldset>
+                <div class="flex flex-wrap justify-between items-center gap-3">
+                    <button type="submit" class="bg-ocean-800 hover:bg-ocean-900 text-white text-sm font-medium px-6 py-3 rounded-xl transition"><i class="fa-solid fa-floppy-disk mr-2"></i>Guardar ajustes</button>
+                    <button type="button" id="btn-reset" class="text-sm text-gray-500 hover:text-red-600 transition"><i class="fa-solid fa-rotate-left mr-1"></i>Restablecer demo</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <!-- Formulario de propiedad -->
+    <div id="modal-propiedad" class="modal fixed inset-0 bg-ocean-900/60 backdrop-blur-sm z-50 hidden items-start justify-center p-4 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="pf-titulo">
+        <form id="propiedad-form" class="bg-white rounded-3xl max-w-2xl w-full my-8 shadow-2xl">
+            <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center">
+                <h2 id="pf-titulo" class="font-serif text-2xl text-gray-900">Nueva propiedad</h2>
+                <button type="button" onclick="cerrarModal('modal-propiedad')" aria-label="Cerrar" class="text-gray-400 hover:text-gray-700 text-xl w-8 h-8"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="p-6 space-y-5">
+                <input type="hidden" id="pf-id">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="sm:col-span-2"><label for="pf-nombre" class="block text-xs font-semibold text-gray-600 mb-1">Nombre</label><input id="pf-nombre" type="text" required class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ocean-500 outline-none"></div>
+                    <div><label for="pf-tipo" class="block text-xs font-semibold text-gray-600 mb-1">Tipo</label><select id="pf-tipo" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ocean-500 outline-none"></select></div>
+                    <div><label for="pf-ubicacion" class="block text-xs font-semibold text-gray-600 mb-1">Ubicación</label><input id="pf-ubicacion" type="text" required class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ocean-500 outline-none"></div>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                    <div><label for="pf-capacidad" class="block text-xs font-semibold text-gray-600 mb-1">Huéspedes (máx.)</label><input id="pf-capacidad" type="number" min="1" max="30" required class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ocean-500 outline-none"></div>
+                    <div><label for="pf-dormitorios" class="block text-xs font-semibold text-gray-600 mb-1">Dormitorios</label><input id="pf-dormitorios" type="number" min="0" max="20" required class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ocean-500 outline-none"></div>
+                    <div><label for="pf-banos" class="block text-xs font-semibold text-gray-600 mb-1">Baños</label><input id="pf-banos" type="number" min="1" max="20" required class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ocean-500 outline-none"></div>
+                    <div><label for="pf-precio" class="block text-xs font-semibold text-gray-600 mb-1">Precio por noche ($)</label><input id="pf-precio" type="number" min="1" required class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ocean-500 outline-none"></div>
+                    <div><label for="pf-aseo" class="block text-xs font-semibold text-gray-600 mb-1">Aseo, cobro único ($)</label><input id="pf-aseo" type="number" min="0" required class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ocean-500 outline-none"></div>
+                    <div><label for="pf-minNoches" class="block text-xs font-semibold text-gray-600 mb-1">Mínimo de noches</label><input id="pf-minNoches" type="number" min="1" max="30" required class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ocean-500 outline-none"></div>
+                </div>
+                <div><label for="pf-descripcion" class="block text-xs font-semibold text-gray-600 mb-1">Descripción</label><textarea id="pf-descripcion" rows="3" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ocean-500 outline-none"></textarea></div>
+                <fieldset><legend class="text-xs font-semibold text-gray-600 mb-2">Comodidades</legend>
+                    <div id="pf-comodidades" class="grid grid-cols-2 sm:grid-cols-3 gap-2"></div></fieldset>
+
+                <fieldset><legend class="text-xs font-semibold text-gray-600 mb-2">Fotos (la primera es la principal)</legend>
+                    <div id="pf-fotos" class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4"></div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="p-4 bg-gray-50 rounded-xl border border-gray-100">
+                            <label for="pf-foto-archivo" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Subir desde tu equipo</label>
+                            <input id="pf-foto-archivo" type="file" accept="image/*" multiple class="block w-full text-xs text-gray-600 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-ocean-800 file:text-white file:text-xs file:font-medium cursor-pointer">
+                            <p class="text-[11px] text-gray-400 mt-2">Se reducen solas para que carguen rápido.</p>
+                        </div>
+                        <div class="p-4 bg-gray-50 rounded-xl border border-gray-100 space-y-2">
+                            <span class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Agregar por enlace</span>
+                            <input id="pf-foto-url" type="url" placeholder="https://..." aria-label="Enlace de la foto" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ocean-500 outline-none">
+                            <input id="pf-foto-alt" type="text" placeholder="Descripción (opcional)" aria-label="Descripción de la foto" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-ocean-500 outline-none">
+                            <button type="button" id="pf-foto-agregar" class="w-full bg-ocean-800 hover:bg-ocean-900 text-white text-xs font-medium py-2 rounded-lg transition">Agregar</button>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <label class="flex items-center gap-2 text-sm cursor-pointer"><input id="pf-activo" type="checkbox" class="rounded text-ocean-700 focus:ring-ocean-500"> Visible en el sitio</label>
+            </div>
+            <div class="px-6 py-4 border-t border-gray-100 flex justify-end gap-3">
+                <button type="button" onclick="cerrarModal('modal-propiedad')" class="px-5 py-2.5 rounded-xl border border-gray-200 text-sm hover:bg-gray-50">Cancelar</button>
+                <button type="submit" class="px-6 py-2.5 rounded-xl bg-ocean-800 hover:bg-ocean-900 text-white text-sm font-medium">Guardar propiedad</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Acceso con PIN -->
+    <div id="modal-pin" data-fija class="modal fixed inset-0 bg-ocean-900/70 backdrop-blur-sm z-50 hidden items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="pin-titulo">
+        <form id="pin-form" class="bg-white rounded-3xl p-8 max-w-xs w-full text-center shadow-2xl">
+            <i class="fa-solid fa-lock text-ocean-700 text-2xl mb-2"></i>
+            <h2 id="pin-titulo" class="font-serif text-xl mb-1">Acceso administrador</h2>
+            <p class="text-xs text-ocean-600 mb-4">Demo: el PIN es <b>1234</b></p>
+            <input id="pin-input" type="password" inputmode="numeric" maxlength="8" aria-label="PIN" class="w-full text-center tracking-[.5em] px-4 py-3 border border-sand-200 rounded-xl focus:ring-2 focus:ring-ocean-500 outline-none mb-2">
+            <p id="pin-error" class="text-sm text-red-600 h-5" role="alert"></p>
+            <div class="flex gap-2 mt-2">
+                <button type="button" id="pin-cancelar" class="flex-1 py-2.5 rounded-xl bg-sand-100">Cancelar</button>
+                <button type="submit" class="flex-1 py-2.5 rounded-xl bg-ocean-900 text-white font-medium">Entrar</button>
+            </div>
+        </form>
+    </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/l10n/es.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/repo.js"></script>
+  <script src="js/nucleo.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

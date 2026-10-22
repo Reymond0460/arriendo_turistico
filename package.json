@@ -1,0 +1,14 @@
+{
+  "name": "arriendo-turistico-demo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Maqueta de arriendos turísticos con varias propiedades (HTML, CSS y JavaScript)",
+  "scripts": {
+    "css": "tailwindcss -c tailwind.config.js -i css/tailwind.src.css -o css/tailwind.css --minify",
+    "css:watch": "tailwindcss -c tailwind.config.js -i css/tailwind.src.css -o css/tailwind.css --watch",
+    "servir": "python -m http.server 5174"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.17"
+  }
+}
